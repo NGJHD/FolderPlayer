@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="AudioPlayer.VolumeUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:AudioPlayer">
+    <UserControl.Resources>
+        <Style x:Key="borderStyle" TargetType="{x:Type Border}">
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="Background" Value="#294c67" />
+            <Setter Property="Margin" Value="0,1,0,1" />
+            <Setter Property="BorderThickness" Value="0" />
+            <EventSetter Event="MouseMove" Handler="Border_MouseMove" />
+            <EventSetter Event="MouseDown" Handler="Border_MouseMove" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border Name="level10"
+                Grid.Row="0"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level9"
+                Grid.Row="1"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level8"
+                Grid.Row="2"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level7"
+                Grid.Row="3"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level6"
+                Grid.Row="4"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level5"
+                Grid.Row="5"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level4"
+                Grid.Row="6"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level3"
+                Grid.Row="7"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level2"
+                Grid.Row="8"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level1"
+                Grid.Row="9"
+                Style="{StaticResource borderStyle}" />
+        <Border Name="level0"
+                Grid.Row="10"
+                Background="Transparent"
+                Style="{StaticResource borderStyle}" />
+    </Grid>
+</UserControl>
