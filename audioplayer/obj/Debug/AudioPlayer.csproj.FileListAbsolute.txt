@@ -1,0 +1,155 @@
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe.config
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.pdb
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\MainWindow.baml
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\MainWindow.g.cs
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\App.g.cs
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.cache
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.g.resources
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.Properties.Resources.resources
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.GenerateResource.Cache
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.exe
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.pdb
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.dll
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\System.Windows.Interactivity.dll
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.pdb
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.xml
+d:\my documents\visual studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\App.baml
+D:\My Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\My Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.lref
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe.config
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.exe
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.pdb
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.pdb
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\App.baml
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\MainWindow.g.cs
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\App.g.cs
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.cache
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.lref
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\MainWindow.baml
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.g.resources
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.Properties.Resources.resources
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.GenerateResource.Cache
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Ironman\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csprojResolveAssemblyReference.cache
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe.config
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.exe
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.pdb
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.pdb
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csprojResolveAssemblyReference.cache
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\App.baml
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\App.g.cs
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.cache
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.lref
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.g.resources
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.Properties.Resources.resources
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.GenerateResource.Cache
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_Content.g.cs
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe.config
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.exe
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.pdb
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csprojResolveAssemblyReference.cache
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\App.baml
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\App.g.cs
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_Content.g.cs
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.cache
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.lref
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\System.Windows.Interactivity.dll
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.pdb
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.g.resources
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.Properties.Resources.resources
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.GenerateResource.Cache
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe.config
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.exe
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.pdb
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\bin\Debug\System.Windows.Interactivity.dll
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.pdb
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.dll
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.pdb
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.xml
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csprojResolveAssemblyReference.cache
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\App.baml
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\App.g.cs
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_Content.g.cs
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.cache
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.lref
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.g.resources
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.Properties.Resources.resources
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.GenerateResource.Cache
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.pdb
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.xml
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.g.cs
+C:\Users\Darren\Desktop\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.baml
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.g.cs
+D:\My Documents\Visual Studio 2012\Projects 2012\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.baml
+F:\Other - Personal\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe.config
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.exe
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.pdb
+F:\Other - Personal\AudioPlayer\AudioPlayer\bin\Debug\System.Windows.Interactivity.dll
+F:\Other - Personal\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe
+F:\Other - Personal\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.pdb
+F:\Other - Personal\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.pdb
+F:\Other - Personal\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.xml
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csprojResolveAssemblyReference.cache
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\App.baml
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.g.cs
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\App.g.cs
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_Content.g.cs
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.cache
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.lref
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.baml
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.g.resources
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.Properties.Resources.resources
+F:\Other - Personal\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.GenerateResource.Cache
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.pdb
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\bin\Debug\MahApps.Metro.xml
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.g.cs
+C:\Users\Darren\Documents\Visual Studio 2012\Projects\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.baml
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe.config
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.pdb
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csprojAssemblyReference.cache
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.g.cs
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\App.g.cs
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.cache
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.lref
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.baml
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.g.resources
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.Properties.Resources.resources
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.GenerateResource.cache
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.CoreCompileInputs.cache
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.exe
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.pdb
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\App.baml
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\VolumeUserControl.g.cs
+C:\Users\ngjhd\Desktop\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\VolumeUserControl.baml
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe.config
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.exe
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\bin\Debug\AudioPlayer.pdb
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csprojAssemblyReference.cache
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\App.baml
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\App.g.cs
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.g.cs
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\VolumeUserControl.g.cs
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.cache
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer_MarkupCompile.lref
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\MainWindow.baml
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\MainWindow\VolumeUserControl.baml
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.g.resources
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.Properties.Resources.resources
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.GenerateResource.cache
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.csproj.CoreCompileInputs.cache
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.exe
+C:\Users\ngjhd\source\repos\AudioPlayer\AudioPlayer\obj\Debug\AudioPlayer.pdb

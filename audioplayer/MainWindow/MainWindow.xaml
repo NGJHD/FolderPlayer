@@ -1,0 +1,846 @@
+﻿<Window x:Class="AudioPlayer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AudioPlayer"
+        Name="mainWindow"
+        Title="Folder Player"
+        Width="900"
+        Height="600"
+        MinWidth="900"
+        MinHeight="600"
+        Closed="Window_Closed"
+        ContentRendered="mainWindow_ContentRendered"
+        StateChanged="mainWindow_StateChanged"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None">
+    <Window.Resources>
+        <local:FilePathToFileNameConverter x:Key="FilePathToFileNameConverter" />
+        <local:BoolToForegroundConverter x:Key="BoolToForegroundConverter" />
+        <local:ForegroundToOpacityConverter x:Key="ForegroundToOpacityConverter" />
+        <local:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter" />
+        <local:StringContainsStringToVisibilityConverter x:Key="StringContainsStringToVisibilityConverter" />
+        <local:SLBIVisibilityConverter x:Key="SLBIVisibilityConverter" />
+
+        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource WindowTextBrush}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              Margin="0"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource MouseOverOverlayBackgroundBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource PressedOverlayBackgroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TitleBarCloseButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              Margin="0"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource MouseOverWindowCloseButtonBackgroundBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource MouseOverWindowCloseButtonForegroundBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource PressedWindowCloseButtonBackgroundBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource MouseOverWindowCloseButtonForegroundBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="buttonGridStyle" TargetType="{x:Type local:ClickGrid}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Margin" Value="0,0,0,0" />
+            <Setter Property="Height" Value="100" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="buttonImageStyle" TargetType="{x:Type Image}">
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Opacity" Value="{x:Static local:OpacityDefinitionClass.Level1Opacity}" />
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+        </Style>
+
+        <!--  Style Playlist ListBox  -->
+        <Style x:Key="PlaylistListBoxStyle" TargetType="{x:Type ListBox}">
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate DataType="{x:Type local:PlayListClass}">
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="Transparent"
+                              MouseDown="mainGrid_PreviewInputDown"
+                              MouseLeave="mainGrid_PreviewTouchUp"
+                              MouseMove="mainGrid_PreviewInputMove"
+                              MouseUp="mainGrid_PreviewTouchUp">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Delete Button  -->
+                            <local:ClickGrid x:Name="deleteButton"
+                                             Width="0"
+                                             Margin="0,3,0,3"
+                                             Background="Red"
+                                             Click="deleteButton_Click">
+                                <Viewbox HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Stretch="Uniform">
+                                    <TextBlock Margin="6"
+                                               FontWeight="SemiBold"
+                                               Foreground="White"
+                                               Text="DELETE" />
+                                </Viewbox>
+                            </local:ClickGrid>
+
+                            <TextBlock Grid.Column="1"
+                                       Margin="12,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       FontWeight="SemiBold"
+                                       Foreground="{Binding isPlaying, Converter={StaticResource BoolToForegroundConverter}}"
+                                       Opacity="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource ForegroundToOpacityConverter}}"
+                                       Text="{Binding filepath, Converter={StaticResource FilePathToFileNameConverter}}" />
+                        </Grid>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style Song list ListBox  -->
+        <Style x:Key="SonglistListBoxStyle" TargetType="{x:Type ListBox}">
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate DataType="{x:Type local:PlayListClass}">
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="Transparent">
+
+                            <TextBlock Margin="12,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="15"
+                                       Foreground="{Binding isPlaying, Converter={StaticResource BoolToForegroundConverter}}"
+                                       Opacity="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource ForegroundToOpacityConverter}}"
+                                       Text="{Binding filepath, Converter={StaticResource FilePathToFileNameConverter}}" />
+                        </Grid>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for Song list ListBoxItem  -->
+        <Style x:Key="SonglistListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Height" Value="30" />
+            <EventSetter Event="MouseDoubleClick" Handler="songlistListBox_MouseDoubleClick" />
+
+            <Setter Property="Visibility">
+                <Setter.Value>
+                    <MultiBinding Converter="{StaticResource SLBIVisibilityConverter}">
+                        <Binding ElementName="filterTB" Path="Text" />
+                        <Binding Path="filepath" />
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border Name="myBorder">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="myBorder" Property="Background" Value="#1f4d5d" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for the Right side of the Slider (Haven't Played)  -->
+        <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="IsTabStop" Value="false" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="Transparent">
+                            <Border Height="3"
+                                    Background="DimGray"
+                                    BorderBrush="DimGray"
+                                    BorderThickness="1" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for the Left side of the Slider (Played)  -->
+        <Style x:Key="SliderRepeatButton1" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="IsTabStop" Value="false" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="Transparent">
+                            <Border Height="3"
+                                    VerticalAlignment="Center"
+                                    Background="#2979FF"
+                                    BorderBrush="#2979FF"
+                                    BorderThickness="1" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for the Slider Thumb  -->
+        <Style x:Key="SliderThumb" TargetType="Thumb">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Grid Width="8"
+                              Height="16"
+                              Background="White" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for the Slider  -->
+        <Style x:Key="CustomSliderStyle" TargetType="Slider">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Track x:Name="PART_Track" Grid.Row="1">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Style="{StaticResource SliderRepeatButton1}" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource SliderThumb}" />
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Style="{StaticResource SliderRepeatButton}" />
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for the Left side of the Slider (Played)  -->
+        <Style x:Key="VolumeSliderRepeatButton" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="IsTabStop" Value="false" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Grid HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Background="Transparent">
+                            <Border Height="3"
+                                    Background="{x:Static local:ColorDefinitionClass.Level4GrayColor}"
+                                    BorderBrush="{x:Static local:ColorDefinitionClass.Level4GrayColor}"
+                                    BorderThickness="1" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for the Slider Thumb  -->
+        <Style x:Key="VolumeSliderThumb" TargetType="Thumb">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Thumb">
+                        <Grid Width="8"
+                              Height="16"
+                              Background="White" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for the Slider  -->
+        <Style x:Key="CustomVolumeSliderStyle" TargetType="Slider">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Track x:Name="PART_Track" Grid.Row="1">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Style="{StaticResource VolumeSliderRepeatButton}" />
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Style="{StaticResource VolumeSliderThumb}" />
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Style="{StaticResource VolumeSliderRepeatButton}" />
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Scrollbar Thumb for the Song ListBox  -->
+        <Style x:Key="ScrollBarTrackThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Grid x:Name="Grid">
+                            <Rectangle Width="Auto"
+                                       Height="Auto"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"
+                                       Fill="Transparent" />
+                            <Border x:Name="CornerScrollBarRectangle"
+                                    Width="Auto"
+                                    Height="Auto"
+                                    Margin="0,1,0,1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="5" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Tag" Value="Horizontal">
+                                <Setter TargetName="CornerScrollBarRectangle" Property="Width" Value="Auto" />
+                                <Setter TargetName="CornerScrollBarRectangle" Property="Height" Value="6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Scrollbar Thumb for the Song ListBox  -->
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+            <Setter Property="Foreground" Value="#adabab" />
+            <Setter Property="Background" Value="#294c67" />
+            <Setter Property="Width" Value="7" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid x:Name="GridRoot"
+                              Width="7"
+                              Background="{TemplateBinding Background}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.00001*" />
+                            </Grid.RowDefinitions>
+                            <Track x:Name="PART_Track"
+                                   Grid.Row="0"
+                                   Focusable="false"
+                                   IsDirectionReversed="true">
+                                <Track.Thumb>
+                                    <Thumb x:Name="Thumb"
+                                           Background="{TemplateBinding Foreground}"
+                                           Style="{DynamicResource ScrollBarTrackThumb}" />
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton x:Name="PageUp"
+                                                  Command="ScrollBar.PageDownCommand"
+                                                  Focusable="false"
+                                                  Opacity="0" />
+                                </Track.IncreaseRepeatButton>
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton x:Name="PageDown"
+                                                  Command="ScrollBar.PageUpCommand"
+                                                  Focusable="false"
+                                                  Opacity="0" />
+                                </Track.DecreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger SourceName="Thumb" Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Thumb" Property="Background" Value="{DynamicResource ButtonSelectBrush}" />
+                            </Trigger>
+                            <Trigger SourceName="Thumb" Property="IsDragging" Value="true">
+                                <Setter TargetName="Thumb" Property="Background" Value="{DynamicResource DarkBrush}" />
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="Thumb" Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                            <Trigger Property="Orientation" Value="Horizontal">
+                                <Setter TargetName="GridRoot" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="-90" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="PART_Track" Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="-90" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Width" Value="Auto" />
+                                <Setter Property="Height" Value="8" />
+                                <Setter TargetName="Thumb" Property="Tag" Value="Horizontal" />
+                                <Setter TargetName="PageDown" Property="Command" Value="ScrollBar.PageLeftCommand" />
+                                <Setter TargetName="PageUp" Property="Command" Value="ScrollBar.PageRightCommand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!--  Tells Windows to treat the first 32px as a title bar  -->
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <!--  BACKGROUND  -->
+        <Grid>
+            <Image RenderOptions.BitmapScalingMode="HighQuality"
+                   Source="..\Resources\Background.png"
+                   Stretch="Fill" />
+            <Image Opacity="0.24"
+                   RenderOptions.BitmapScalingMode="HighQuality"
+                   Source="..\Resources\GlassFrame.png"
+                   Stretch="Fill" />
+        </Grid>
+
+        <!--  MAIN  -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32" />
+                <!--  Title Bar  -->
+                <RowDefinition Height="125" />
+                <!--  BUTTONS  -->
+                <RowDefinition Height="Auto" />
+                <!--  NOW PLAYING SINGLE  -->
+                <RowDefinition Height="*" />
+                <!--  LIST  -->
+            </Grid.RowDefinitions>
+
+            <!--  TITLE BAR  -->
+            <Grid Background="#00688f">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1"
+                           Margin="6,0,0,0"
+                           VerticalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="White"
+                           Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Title}" />
+                <Button Grid.Column="2"
+                        Click="OnInfoButtonClick"
+                        Style="{StaticResource TitleBarButtonStyle}">
+                    <Image Source="..\Resources\Info.png"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Stretch="Uniform" 
+                           Margin="10"/>
+                </Button>
+                <Button Grid.Column="3"
+                        Click="OnMinimizeButtonClick"
+                        RenderOptions.EdgeMode="Aliased"
+                        Style="{StaticResource TitleBarButtonStyle}">
+                    <Path Width="46"
+                          Height="32"
+                          Data="M 18,15 H 28"
+                          Stroke="White"
+                          StrokeThickness="1" />
+                </Button>
+                <Button Name="maximizeButton"
+                        Grid.Column="4"
+                        Click="OnMaximizeRestoreButtonClick"
+                        Style="{StaticResource TitleBarButtonStyle}">
+                    <Path Width="46"
+                          Height="32"
+                          Data="M 18.5,10.5 H 27.5 V 19.5 H 18.5 Z"
+                          Stroke="White"
+                          StrokeThickness="1" />
+                </Button>
+                <Button Name="restoreButton"
+                        Grid.Column="4"
+                        Click="OnMaximizeRestoreButtonClick"
+                        Style="{StaticResource TitleBarButtonStyle}">
+                    <Path Width="46"
+                          Height="32"
+                          Data="M 18.5,12.5 H 25.5 V 19.5 H 18.5 Z M 20.5,12.5 V 10.5 H 27.5 V 17.5 H 25.5"
+                          Stroke="White"
+                          StrokeThickness="1" />
+                </Button>
+                <Button Grid.Column="5"
+                        Click="OnCloseButtonClick"
+                        Style="{StaticResource TitleBarCloseButtonStyle}">
+                    <Path Width="46"
+                          Height="32"
+                          Data="M 18,11 27,20 M 18,20 27,11"
+                          Stroke="White"
+                          StrokeThickness="1" />
+                </Button>
+            </Grid>
+
+            <!--  MEDIA PLAYER  -->
+            <MediaElement Name="mediaPlayer"
+                          LoadedBehavior="Manual"
+                          MediaEnded="mediaPlayer_MediaEnded"
+                          MediaOpened="mediaPlayer_MediaOpened"
+                          UnloadedBehavior="Manual"
+                          Visibility="Collapsed"
+                          Volume="0.5" />
+
+            <!--  BUTTONS & SLIDER BACKGROUND  -->
+            <Grid Grid.Row="1"
+                  Background="Black"
+                  Opacity="0.3" />
+
+            <!--  BUTTONS & SLIDER  -->
+            <Grid Grid.Row="1"
+                  Width="Auto"
+                  Margin="0,6,0,24"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  BUTTONS  -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                    <!--  Shuffle Button  -->
+                    <local:ClickGrid Height="17"
+                                     Margin="24,0,24,0"
+                                     Click="shuffleGrid_Click"
+                                     Style="{StaticResource buttonGridStyle}">
+                        <Image Opacity="{x:Static local:OpacityDefinitionClass.Level4Opacity}"
+                               Source="..\Resources\ShuffleOff.png"
+                               Style="{StaticResource buttonImageStyle}">
+                            <Image.Visibility>
+                                <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
+                                    <Binding ElementName="mainWindow" Path="shuffleState" />
+                                    <Binding Source="off" />
+                                </MultiBinding>
+                            </Image.Visibility>
+                        </Image>
+                        <Image Source="..\Resources\ShuffleOn.png" Style="{StaticResource buttonImageStyle}">
+                            <Image.Visibility>
+                                <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
+                                    <Binding ElementName="mainWindow" Path="shuffleState" />
+                                    <Binding Source="on" />
+                                </MultiBinding>
+                            </Image.Visibility>
+                        </Image>
+                    </local:ClickGrid>
+
+                    <!--  Previous Button  -->
+                    <local:ClickGrid Click="previousGrid_Click" Style="{StaticResource buttonGridStyle}">
+                        <Image Source="..\Resources\Previous.png" Style="{StaticResource buttonImageStyle}" />
+                    </local:ClickGrid>
+
+                    <!--  Play and Pause Button  -->
+                    <local:ClickGrid Click="playGrid_Click" Style="{StaticResource buttonGridStyle}">
+                        <Image Name="playImage"
+                               Source="..\Resources\Play.png"
+                               Style="{StaticResource buttonImageStyle}" />
+                        <Image Name="pauseImage"
+                               Source="..\Resources\Pause.png"
+                               Style="{StaticResource buttonImageStyle}"
+                               Visibility="Collapsed" />
+                    </local:ClickGrid>
+
+                    <!--  Next Button  -->
+                    <local:ClickGrid Click="nextGrid_Click" Style="{StaticResource buttonGridStyle}">
+                        <Image Source="..\Resources\Next.png" Style="{StaticResource buttonImageStyle}" />
+                    </local:ClickGrid>
+
+                    <!--  Repeat Button  -->
+                    <local:ClickGrid Height="17"
+                                     Margin="24,0,24,0"
+                                     Click="repeatGrid_Click"
+                                     Style="{StaticResource buttonGridStyle}">
+                        <Image Opacity="{x:Static local:OpacityDefinitionClass.Level4Opacity}"
+                               Source="..\Resources\RepeatOff.png"
+                               Style="{StaticResource buttonImageStyle}">
+                            <Image.Visibility>
+                                <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
+                                    <Binding ElementName="mainWindow" Path="repeatMode" />
+                                    <Binding Source="off" />
+                                </MultiBinding>
+                            </Image.Visibility>
+                        </Image>
+
+                        <Image Source="..\Resources\RepeatOn.png" Style="{StaticResource buttonImageStyle}">
+                            <Image.Visibility>
+                                <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
+                                    <Binding ElementName="mainWindow" Path="repeatMode" />
+                                    <Binding Source="playlist" />
+                                </MultiBinding>
+                            </Image.Visibility>
+                        </Image>
+
+                        <Image Source="..\Resources\RepeatSingle.png" Style="{StaticResource buttonImageStyle}">
+                            <Image.Visibility>
+                                <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
+                                    <Binding ElementName="mainWindow" Path="repeatMode" />
+                                    <Binding Source="single" />
+                                </MultiBinding>
+                            </Image.Visibility>
+                        </Image>
+                    </local:ClickGrid>
+                </StackPanel>
+
+                <!--  SLIDERS  -->
+                <Grid Grid.Row="1"
+                      HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="350" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Name="currentTimeTextBlock"
+                               Margin="0,0,12,0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               FontFamily="Consolas"
+                               Opacity="{x:Static local:OpacityDefinitionClass.Level4Opacity}"
+                               Text="0:00" />
+                    <Slider Name="seekBar"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            IsMoveToPointEnabled="True"
+                            SmallChange="1"
+                            Style="{StaticResource CustomSliderStyle}"
+                            ValueChanged="seekBar_ValueChanged" />
+
+                    <TextBlock Name="totalTimeTextBlock"
+                               Grid.Column="2"
+                               Margin="12,0,0,0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontSize="13"
+                               FontFamily="Consolas"
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               Opacity="{x:Static local:OpacityDefinitionClass.Level4Opacity}"
+                               Text="0:00" />
+                </Grid>
+            </Grid>
+
+            <!--  Volume Control  -->
+            <local:VolumeUserControl Grid.Row="1"
+                                     x:Name="volumeUserControl"
+                                     HorizontalAlignment="Right"
+                                     VerticalAlignment="Stretch"
+                                     Margin="0,18,24,12" 
+                                     Width="40"/>
+
+            <!--  NOW PLAYING SINGLE  -->
+            <Grid Name="nowPlayingSingleGrid"
+                  Grid.Row="2"
+                  Height="30"
+                  Background="#d4af37"
+                  Visibility="Collapsed">
+                <StackPanel Margin="12,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="15"
+                               Foreground="White"
+                               Text="Now Playing Single: " />
+                    <TextBlock Name="nowPlayingSingleTextBlock"
+                               VerticalAlignment="Center"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="White"
+                               Opacity="1"
+                               Text="" />
+                </StackPanel>
+            </Grid>
+
+            <!--  LISTBOXES  -->
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  PLAYLIST  -->
+                <ListBox Name="playlistListBox"
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                         AllowDrop="True"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Margin="0,0,0,12"
+                         Drop="playlistListBox_Drop"
+                         SelectionChanged="playlistListBox_SelectionChanged"
+                         Style="{StaticResource PlaylistListBoxStyle}">
+                    <ListBox.Resources>
+                        <ContextMenu x:Key="myContextMenu">
+                            <MenuItem Click="deleteMenuItem_Click" Header="Delete" />
+                        </ContextMenu>
+
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Height" Value="38" />
+                            <Setter Property="ContextMenu" Value="{StaticResource myContextMenu}" />
+                            <EventSetter Event="MouseDoubleClick" Handler="playlistListBox_MouseDoubleClick" />
+
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <Border Name="myBorder">
+                                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="myBorder" Property="Background" Value="#003447" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                    </ListBox.Resources>
+                </ListBox>
+
+                <!--  Drag and Drop Textblock  -->
+                <TextBlock Margin="20"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="20"
+                           Foreground="White"
+                           IsHitTestVisible="False"
+                           Opacity="0.3"
+                           Text="Drag and drop a folder to create a playlist"
+                           TextAlignment="Center"
+                           TextWrapping="Wrap"
+                           Visibility="{Binding ElementName=playlistListBox, Path=Items.Count, Converter={StaticResource ZeroToVisibilityConverter}}" />
+
+                <!--  Main Area  -->
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  SONG LIST  -->
+                    <ListBox Name="songlistListBox"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             ItemContainerStyle="{StaticResource SonglistListBoxItemStyle}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             Style="{StaticResource SonglistListBoxStyle}" />
+
+                    <!--  Search Icon and Volume Control  -->
+                    <Grid Grid.Row="1"
+                          Height="30"
+                          Margin="6">
+                        <!--  Search Icon  -->
+                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Border Background="Black"
+                                    CornerRadius="6"
+                                    Opacity="0.24" />
+                            <TextBox x:Name="filterTB"
+                                     Padding="6,0,6,0"
+                                     HorizontalAlignment="Stretch"
+                                     VerticalContentAlignment="Center"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     CaretBrush="White"
+                                     FontSize="15"
+                                     Foreground="LightGray" />
+                            <Image Margin="6"
+                                   HorizontalAlignment="Right"
+                                   RenderOptions.BitmapScalingMode="HighQuality"
+                                   Source="../Resources/SearchIcon.png"
+                                   Stretch="Uniform" />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
