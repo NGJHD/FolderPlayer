@@ -1,21 +1,22 @@
 @echo off
+:: Registers FolderPlayer as a handler for audio files.
+:: All work happens in Register-FileAssociations.ps1 next to this file.
+:: Pass /remove to undo the registration.
+
 setlocal
 
-:: Get the folder where this batch file is located
-set "AppPath=%~dp0AudioPlayer.exe"
+set "PS=%~dp0Register-FileAssociations.ps1"
 
-:: Remove trailing backslash for registry
-set "AppPath=%AppPath:~0,-1%"
-
-:: List of audio extensions to associate
-set "EXTS=.mp3 .wav .flac .aac .ogg .m4a .wma"
-
-for %%E in (%EXTS%) do (
-    echo Associating %%E with AudioPlayer.exe...
-    reg add "HKCU\Software\Classes\%%E" /ve /d "AudioPlayerApp" /f
-    reg add "HKCU\Software\Classes\AudioPlayerApp\shell\open\command" /ve /d "\"%AppPath%\" \"%%1\"" /f
-    echo.
+if not exist "%PS%" (
+    echo ERROR: Register-FileAssociations.ps1 not found next to this batch file.
+    pause
+    exit /b 1
 )
 
-echo Done! Audio files are now associated.
+if /i "%~1"=="/remove" (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "%PS%" -Remove
+) else (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "%PS%" -OpenSettings
+)
+
 pause
