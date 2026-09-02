@@ -36,7 +36,12 @@ Tagged releases carry a prebuilt zip; the build output is not committed to the r
 
 1. Bump the version in `audioplayer\Properties\AssemblyInfo.cs` (`AssemblyVersion` and `AssemblyFileVersion`). The About box reads this value back off the assembly, so there is nothing else to update.
 2. Build Release: `msbuild AudioPlayer.sln /p:Configuration=Release`
-3. Zip the output: `Compress-Archive -Path audioplayer\bin\Release\* -DestinationPath FolderPlayer-v2.1.0.zip`
+3. Zip just the three files a user needs - the `.pdb` is debug symbols and embeds your local source paths, so leave it out:
+   ```powershell
+   $files = 'AudioPlayer.exe', 'Register-FileAssociations.bat', 'Register-FileAssociations.ps1'
+   $files | ForEach-Object { "audioplayer\bin\Release\$_" } |
+       Compress-Archive -DestinationPath FolderPlayer-v2.1.0.zip -Force
+   ```
 4. Tag and push the commit:
    ```
    git tag -a v2.1.0 -m "Folder Player v2.1.0"
