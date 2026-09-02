@@ -1,8 +1,15 @@
 # Folder Player
 This personal project was started in 2016 due to a complete lack of folder player options for the Windows platform. It plays audio files by folders, hence there is no need to create a customized cumbersome playlist; the folder itself is the playlist. 
 
-<img width="900" height="600" alt="image" src="https://github.com/user-attachments/assets/2e218d69-0072-4a69-a911-8e690d1151aa" />
+<img width="895" height="595" alt="project-music-player" src="https://github.com/user-attachments/assets/dc24fc55-df0e-4a19-8e69-aeb920f0316f" />
 
+## Getting started
+
+### Install
+
+Grab the latest zip from [Releases](../../releases), unzip it anywhere, and run `AudioPlayer.exe`. Nothing is installed and nothing is written outside the folder you unzip into.
+
+# For developers
 ## Building
 
 Open `AudioPlayer.sln` in Visual Studio 2015 or later and build (Debug or Release). The project targets .NET Framework 4.5 and has no NuGet or third-party dependencies, so a clean clone builds as-is.
