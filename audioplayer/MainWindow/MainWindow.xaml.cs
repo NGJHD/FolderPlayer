@@ -315,8 +315,10 @@ namespace AudioPlayer
                 return;
             }
 
-            //If it's less than 5 seconds, restart the song
-            if (seekBar.Value > 3 && seekBar.Value < 5 || songHistoryList.Count == 1)
+            //NO LONGER VALID: If it's less than 5 seconds, restart the song
+            //NO LONGER VALID: if (seekBar.Value > 3 && seekBar.Value < 5 || songHistoryList.Count == 1)
+            //2026-09-02, if it's more than 5 seconds, restart the song
+            if (seekBar.Value > 5 || songHistoryList.Count == 1)
             {
                 mediaPlayer.Stop();
                 mediaPlayer.Play();
