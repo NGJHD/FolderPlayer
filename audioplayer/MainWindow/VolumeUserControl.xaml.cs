@@ -40,7 +40,7 @@ namespace AudioPlayer
                 }
             }
 
-            GlobalVariables.mainWindow.mediaPlayer.Volume = level / 10.0;
+            GlobalVariables.MainWindow.mediaPlayer.Volume = level / 10.0;
         }
 
         public int GetLevel()

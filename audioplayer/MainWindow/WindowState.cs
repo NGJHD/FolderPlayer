@@ -46,7 +46,6 @@ namespace AudioPlayer
             this.ShowInTaskbar = true;
             this.WindowState = System.Windows.WindowState.Normal;
             this.Activate();
-            //trayIcon.Visible = false;
         }
 
         private void mainWindow_StateChanged(object sender, EventArgs e)
@@ -54,7 +53,6 @@ namespace AudioPlayer
             if (this.WindowState == System.Windows.WindowState.Minimized)
             {
                 this.ShowInTaskbar = false;
-                //trayIcon.Visible = true;
             }
         }
 /************************************************************************************************/

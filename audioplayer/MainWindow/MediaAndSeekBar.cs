@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace AudioPlayer
 {
     public partial class MainWindow : Window
     {
 /************************************************************************************************/
-        private System.Windows.Threading.DispatcherTimer seekBarTimer = new System.Windows.Threading.DispatcherTimer(System.Windows.Threading.DispatcherPriority.Render);
+        private DispatcherTimer seekBarTimer = new DispatcherTimer(DispatcherPriority.Render);
         private bool hasHour = false;
 /************************************************************************************************/
         private void initSeekBar()
@@ -22,11 +23,11 @@ namespace AudioPlayer
 
             if (hasHour == false)
             {
-                currentTimeTextBlock.Text = ts.ToString(@"mm\:ss"); //ts.Minutes.ToString() + ":" + ts.Seconds.ToString().PadLeft(2, '0');
+                currentTimeTextBlock.Text = ts.ToString(@"mm\:ss");
             }
             else
             {
-                currentTimeTextBlock.Text = ts.ToString(@"hh\:mm\:ss"); //ts.Hours.ToString().PadLeft(1, '0') + ":" + ts.Minutes.ToString().PadLeft(2, '0') + ":" + ts.Seconds.ToString().PadLeft(2, '0');
+                currentTimeTextBlock.Text = ts.ToString(@"hh\:mm\:ss");
             }
         }
 
@@ -45,9 +46,9 @@ namespace AudioPlayer
 
             if (GlobalVariables.NowPlayingSingle != "")
             {
-                if (repeatMode == REPEAT_MODE.SINGLE || repeatMode == REPEAT_MODE.PLAYLIST)
+                if (RepeatMode == RepeatMode.Single || RepeatMode == RepeatMode.Playlist)
                 {
-                    playSong(new SongClass(GlobalVariables.NowPlayingSingle));
+                    PlaySong(new Song(GlobalVariables.NowPlayingSingle));
                 }
                 else
                 {
@@ -58,15 +59,9 @@ namespace AudioPlayer
             }
             else
             {
-                new System.Threading.Thread(() =>
-                {
-                    System.Threading.Thread.Sleep(250);
-
-                    Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Render, new Action(() =>
-                    {
-                        nextGrid_Click(null, null);
-                    }));
-                }).Start();
+                //Let the MediaElement settle after the Stop() above before loading the next
+                //source, otherwise the new track can be cut off as it starts.
+                invokeAfter(TimeSpan.FromMilliseconds(250), DispatcherPriority.Render, () => nextGrid_Click(null, null));
             }
         }
 
@@ -90,16 +85,15 @@ namespace AudioPlayer
 
             TimeSpan ts = mediaPlayer.NaturalDuration.TimeSpan;
             seekBar.Maximum = ts.TotalSeconds;
-            //seekBar.LargeChange = Math.Min(10, ts.Seconds / 10);
 
             if (ts.Hours != 0)
             {
-                totalTimeTextBlock.Text = ts.ToString(@"hh\:mm\:ss"); //ts.Hours + ":" + ts.Minutes.ToString().PadLeft(2, '0') + ":" + ts.Seconds.ToString().PadLeft(2, '0');
+                totalTimeTextBlock.Text = ts.ToString(@"hh\:mm\:ss");
                 hasHour = true;
             }
             else
             {
-                totalTimeTextBlock.Text = ts.ToString(@"mm\:ss"); //ts.Minutes + ":" + ts.Seconds.ToString().PadLeft(2, '0');
+                totalTimeTextBlock.Text = ts.ToString(@"mm\:ss");
                 hasHour = false;
             }
 

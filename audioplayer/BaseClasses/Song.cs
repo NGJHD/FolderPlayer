@@ -1,31 +1,31 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 namespace AudioPlayer
 {
-    public class SongClass : INotifyPropertyChanged
+    public class Song : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string _filepath;
-        public string filepath
+        private string _filePath;
+        public string FilePath
         {
             get
             {
-                return _filepath;
+                return _filePath;
             }
 
             set
             {
-                _filepath = value;
+                _filePath = value;
                 if (PropertyChanged != null)
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs("filepath"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("FilePath"));
                 }
             }
         }
 
         private bool _isPlaying;
-        public bool isPlaying
+        public bool IsPlaying
         {
             get
             {
@@ -37,19 +37,19 @@ namespace AudioPlayer
                 _isPlaying = value;
                 if (PropertyChanged != null)
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs("isPlaying"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsPlaying"));
                 }
             }
         }
 
-        public SongClass()
+        public Song()
         {
         }
 
-        public SongClass(string filepath)
+        public Song(string filePath)
         {
-            this.filepath = filepath;
-            isPlaying = false;
+            FilePath = filePath;
+            IsPlaying = false;
         }
     }
 }

@@ -97,7 +97,7 @@
         <Style x:Key="buttonImageStyle" TargetType="{x:Type Image}">
             <Setter Property="Stretch" Value="Uniform" />
             <Setter Property="Margin" Value="0" />
-            <Setter Property="Opacity" Value="{x:Static local:OpacityDefinitionClass.Level1Opacity}" />
+            <Setter Property="Opacity" Value="{x:Static local:OpacityDefinitions.Level1Opacity}" />
             <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
         </Style>
 
@@ -105,7 +105,7 @@
         <Style x:Key="PlaylistListBoxStyle" TargetType="{x:Type ListBox}">
             <Setter Property="ItemTemplate">
                 <Setter.Value>
-                    <DataTemplate DataType="{x:Type local:PlayListClass}">
+                    <DataTemplate DataType="{x:Type local:Playlist}">
                         <Grid HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               Background="Transparent"
@@ -140,9 +140,9 @@
                                        VerticalAlignment="Center"
                                        FontSize="15"
                                        FontWeight="SemiBold"
-                                       Foreground="{Binding isPlaying, Converter={StaticResource BoolToForegroundConverter}}"
+                                       Foreground="{Binding IsPlaying, Converter={StaticResource BoolToForegroundConverter}}"
                                        Opacity="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource ForegroundToOpacityConverter}}"
-                                       Text="{Binding filepath, Converter={StaticResource FilePathToFileNameConverter}}" />
+                                       Text="{Binding FilePath, Converter={StaticResource FilePathToFileNameConverter}}" />
                         </Grid>
                     </DataTemplate>
                 </Setter.Value>
@@ -153,7 +153,7 @@
         <Style x:Key="SonglistListBoxStyle" TargetType="{x:Type ListBox}">
             <Setter Property="ItemTemplate">
                 <Setter.Value>
-                    <DataTemplate DataType="{x:Type local:PlayListClass}">
+                    <DataTemplate DataType="{x:Type local:Playlist}">
                         <Grid HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               Background="Transparent">
@@ -161,9 +161,9 @@
                             <TextBlock Margin="12,0,0,0"
                                        VerticalAlignment="Center"
                                        FontSize="15"
-                                       Foreground="{Binding isPlaying, Converter={StaticResource BoolToForegroundConverter}}"
+                                       Foreground="{Binding IsPlaying, Converter={StaticResource BoolToForegroundConverter}}"
                                        Opacity="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource ForegroundToOpacityConverter}}"
-                                       Text="{Binding filepath, Converter={StaticResource FilePathToFileNameConverter}}" />
+                                       Text="{Binding FilePath, Converter={StaticResource FilePathToFileNameConverter}}" />
                         </Grid>
                     </DataTemplate>
                 </Setter.Value>
@@ -181,7 +181,7 @@
                 <Setter.Value>
                     <MultiBinding Converter="{StaticResource SLBIVisibilityConverter}">
                         <Binding ElementName="filterTB" Path="Text" />
-                        <Binding Path="filepath" />
+                        <Binding Path="FilePath" />
                     </MultiBinding>
                 </Setter.Value>
             </Setter>
@@ -300,8 +300,8 @@
                               VerticalAlignment="Stretch"
                               Background="Transparent">
                             <Border Height="3"
-                                    Background="{x:Static local:ColorDefinitionClass.Level4GrayColor}"
-                                    BorderBrush="{x:Static local:ColorDefinitionClass.Level4GrayColor}"
+                                    Background="{x:Static local:ColorDefinitions.Level4GrayColor}"
+                                    BorderBrush="{x:Static local:ColorDefinitions.Level4GrayColor}"
                                     BorderThickness="1" />
                         </Grid>
                     </ControlTemplate>
@@ -585,12 +585,12 @@
                                      Margin="24,0,24,0"
                                      Click="shuffleGrid_Click"
                                      Style="{StaticResource buttonGridStyle}">
-                        <Image Opacity="{x:Static local:OpacityDefinitionClass.Level4Opacity}"
+                        <Image Opacity="{x:Static local:OpacityDefinitions.Level4Opacity}"
                                Source="..\Resources\ShuffleOff.png"
                                Style="{StaticResource buttonImageStyle}">
                             <Image.Visibility>
                                 <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
-                                    <Binding ElementName="mainWindow" Path="shuffleState" />
+                                    <Binding ElementName="mainWindow" Path="ShuffleState" />
                                     <Binding Source="off" />
                                 </MultiBinding>
                             </Image.Visibility>
@@ -598,7 +598,7 @@
                         <Image Source="..\Resources\ShuffleOn.png" Style="{StaticResource buttonImageStyle}">
                             <Image.Visibility>
                                 <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
-                                    <Binding ElementName="mainWindow" Path="shuffleState" />
+                                    <Binding ElementName="mainWindow" Path="ShuffleState" />
                                     <Binding Source="on" />
                                 </MultiBinding>
                             </Image.Visibility>
@@ -631,12 +631,12 @@
                                      Margin="24,0,24,0"
                                      Click="repeatGrid_Click"
                                      Style="{StaticResource buttonGridStyle}">
-                        <Image Opacity="{x:Static local:OpacityDefinitionClass.Level4Opacity}"
+                        <Image Opacity="{x:Static local:OpacityDefinitions.Level4Opacity}"
                                Source="..\Resources\RepeatOff.png"
                                Style="{StaticResource buttonImageStyle}">
                             <Image.Visibility>
                                 <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
-                                    <Binding ElementName="mainWindow" Path="repeatMode" />
+                                    <Binding ElementName="mainWindow" Path="RepeatMode" />
                                     <Binding Source="off" />
                                 </MultiBinding>
                             </Image.Visibility>
@@ -645,7 +645,7 @@
                         <Image Source="..\Resources\RepeatOn.png" Style="{StaticResource buttonImageStyle}">
                             <Image.Visibility>
                                 <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
-                                    <Binding ElementName="mainWindow" Path="repeatMode" />
+                                    <Binding ElementName="mainWindow" Path="RepeatMode" />
                                     <Binding Source="playlist" />
                                 </MultiBinding>
                             </Image.Visibility>
@@ -654,7 +654,7 @@
                         <Image Source="..\Resources\RepeatSingle.png" Style="{StaticResource buttonImageStyle}">
                             <Image.Visibility>
                                 <MultiBinding Converter="{StaticResource StringContainsStringToVisibilityConverter}">
-                                    <Binding ElementName="mainWindow" Path="repeatMode" />
+                                    <Binding ElementName="mainWindow" Path="RepeatMode" />
                                     <Binding Source="single" />
                                 </MultiBinding>
                             </Image.Visibility>
@@ -678,7 +678,7 @@
                                FontWeight="SemiBold"
                                Foreground="White"
                                FontFamily="Consolas"
-                               Opacity="{x:Static local:OpacityDefinitionClass.Level4Opacity}"
+                               Opacity="{x:Static local:OpacityDefinitions.Level4Opacity}"
                                Text="0:00" />
                     <Slider Name="seekBar"
                             Grid.Column="1"
@@ -698,7 +698,7 @@
                                FontFamily="Consolas"
                                FontWeight="SemiBold"
                                Foreground="White"
-                               Opacity="{x:Static local:OpacityDefinitionClass.Level4Opacity}"
+                               Opacity="{x:Static local:OpacityDefinitions.Level4Opacity}"
                                Text="0:00" />
                 </Grid>
             </Grid>

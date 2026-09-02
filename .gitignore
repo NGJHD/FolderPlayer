@@ -1,1 +1,35 @@
-audioplayer/obj/
+## Build output
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio / Rider user state
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## Runtime files written by the app itself
+MainConfig.xml
+
+## Build results / packages
+[Dd]ebug/
+[Rr]elease/
+[Dd]ebugPublic/
+[Rr]eleasePublic/
+x64/
+x86/
+packages/
+*.nupkg
+
+## Misc
+*.pidb
+*.svclog
+*.cache
+_ReSharper*/
+Thumbs.db
+Desktop.ini

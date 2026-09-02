@@ -14,13 +14,19 @@ namespace AudioPlayer
 /************************************************************************************************/
         private void deleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            Playlist playListObj = playlistListBox.SelectedItem as Playlist;
+
+            if (playListObj == null)
+            {
+                return;
+            }
+
             //Remove from XML
-            PlayListClass playListObj = (PlayListClass)playlistListBox.SelectedItem;
             System.Xml.XmlNodeList playlist = mainConfigXml.SelectNodes("Main/PlayList/FilePath");
 
             for (int i = 0; i < playlist.Count; i++)
             {
-                if (playListObj.filepath == playlist[i].InnerText)
+                if (playListObj.FilePath == playlist[i].InnerText)
                 {
                     mainConfigXml.SelectSingleNode("Main/PlayList").RemoveChild(playlist[i]);
                     mainConfigXml.Save(mainConfigXmlFileName);
@@ -29,9 +35,9 @@ namespace AudioPlayer
                 }
             }
 
-            //Remove from ListBox
-            int deleteIdx = playlistListBox.SelectedIndex;
-
+            //Remove from ListBox. Move the selection off the doomed row first, then remove by
+            //object: Items carries live SortDescriptions, so it is a sorted view and the index
+            //captured before the selection moved no longer points at the same row.
             if (playlistListBox.Items.Count == 1)
             {
                 playlistListBox.SelectedIndex = -1;
@@ -49,7 +55,7 @@ namespace AudioPlayer
                 }
             }
 
-            playlistListBox.Items.RemoveAt(deleteIdx);
+            playlistListBox.Items.Remove(playListObj);
         }
 /************************************************************************************************/
         private void mainGrid_PreviewInputDown(object sender, MouseEventArgs e)
@@ -138,7 +144,7 @@ namespace AudioPlayer
 
             if (deleteButton.Width != 60)
             {
-                System.Windows.Media.Animation.DoubleAnimation hideDeleteButtonAnimation = new System.Windows.Media.Animation.DoubleAnimation(0, new Duration(TimeSpan.FromMilliseconds(250)));// AnimationClass.Duration_250ms);
+                System.Windows.Media.Animation.DoubleAnimation hideDeleteButtonAnimation = new System.Windows.Media.Animation.DoubleAnimation(0, new Duration(TimeSpan.FromMilliseconds(250)));
                 hideDeleteButtonAnimation.Completed += (o2, e2) =>
                 {
                     deleteButton.BeginAnimation(FrameworkElement.WidthProperty, null);

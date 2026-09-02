@@ -2,7 +2,7 @@
 
 namespace AudioPlayer
 {
-    public static class ColorDefinitionClass
+    public static class ColorDefinitions
     {
         public static readonly SolidColorBrush Level1GrayColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#101010");
         public static readonly SolidColorBrush Level2GrayColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#212121");
@@ -14,7 +14,7 @@ namespace AudioPlayer
         public static readonly SolidColorBrush UnSelectedColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFFFFF");        
     }
 
-    public static class OpacityDefinitionClass
+    public static class OpacityDefinitions
     {
         public static readonly double Level1Opacity = 1.00;
         public static readonly double Level2Opacity = 0.70;
@@ -28,7 +28,7 @@ namespace AudioPlayer
 
     public static class GlobalVariables
     {
-        public static MainWindow mainWindow = null;
+        public static MainWindow MainWindow = null;
         public static string NowPlayingSingle = "";
     }
 }

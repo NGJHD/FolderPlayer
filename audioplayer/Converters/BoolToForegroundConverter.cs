@@ -9,10 +9,10 @@ namespace AudioPlayer
         {
             if (System.Convert.ToBoolean(value) == true)
             {
-                return ColorDefinitionClass.SelectedColor;
+                return ColorDefinitions.SelectedColor;
             }
 
-            return ColorDefinitionClass.UnSelectedColor;
+            return ColorDefinitions.UnSelectedColor;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

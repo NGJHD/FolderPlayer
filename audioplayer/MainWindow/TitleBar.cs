@@ -14,15 +14,18 @@ namespace AudioPlayer
 
         private void OnInfoButtonClick(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Music Folder Player v2.1.0\n" +
+            //Read the version off the assembly rather than repeating it here, so this box and
+            //AssemblyInfo.cs cannot drift apart.
+            Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+
+            MessageBox.Show("Music Folder Player v" + version.ToString(3) + "\n" +
                             "Written by: Darren Ng\n" +
                             "Email: ng.jh.darren@outlook.com\n", "Info");
         }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
         {
-            //Application.Current.Shutdown();
-            GlobalVariables.mainWindow.Close();
+            GlobalVariables.MainWindow.Close();
         }
 
         private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e)

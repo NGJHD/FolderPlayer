@@ -4,18 +4,18 @@ namespace AudioPlayer
 {
     public partial class MainWindow : Window
     {
-        public STATE shuffleState
+        public ShuffleState ShuffleState
         {
-            get { return (STATE)GetValue(shuffleStateProperty); }
-            set { SetValue(shuffleStateProperty, value); }
+            get { return (ShuffleState)GetValue(ShuffleStateProperty); }
+            set { SetValue(ShuffleStateProperty, value); }
         }
-        public static readonly DependencyProperty shuffleStateProperty = DependencyProperty.Register("shuffleState", typeof(STATE), typeof(Window), new PropertyMetadata(STATE.OFF));
+        public static readonly DependencyProperty ShuffleStateProperty = DependencyProperty.Register("ShuffleState", typeof(ShuffleState), typeof(Window), new PropertyMetadata(ShuffleState.Off));
 
-        public REPEAT_MODE repeatMode
+        public RepeatMode RepeatMode
         {
-            get { return (REPEAT_MODE)GetValue(repeatModeProperty); }
-            set { SetValue(repeatModeProperty, value); }
+            get { return (RepeatMode)GetValue(RepeatModeProperty); }
+            set { SetValue(RepeatModeProperty, value); }
         }
-        public static readonly DependencyProperty repeatModeProperty = DependencyProperty.Register("repeatMode", typeof(REPEAT_MODE), typeof(Window), new PropertyMetadata(REPEAT_MODE.PLAYLIST));
+        public static readonly DependencyProperty RepeatModeProperty = DependencyProperty.Register("RepeatMode", typeof(RepeatMode), typeof(Window), new PropertyMetadata(RepeatMode.Playlist));
     }
 }

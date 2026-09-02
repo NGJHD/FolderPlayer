@@ -12,7 +12,13 @@ namespace AudioPlayer
     public partial class MainWindow : Window
     {
 /************************************************************************************************/
-        private static string[] audioExtensions = { ".MP3", ".WMA", ".M4A", ".AAC" };
+        //Formats the WPF MediaElement (Windows Media Foundation) can decode out of the box.
+        //Keep this in step with $Extensions in Scripts\Register-FileAssociations.ps1 - a type
+        //registered there but missing here launches the app on a file it will never list.
+        private static readonly string[] audioExtensions = { ".MP3", ".WMA", ".M4A", ".AAC", ".WAV", ".FLAC" };
+
+        //Guards against directory junction loops and pathological nesting during a folder scan.
+        private const int maxFolderScanDepth = 32;
 /************************************************************************************************/
         private void playlistListBox_Drop(object sender, DragEventArgs e)
         {
@@ -25,7 +31,7 @@ namespace AudioPlayer
                 bool found = false;
                 for (int i = 0; i < playlistListBox.Items.Count; i++)
                 {
-                    if ((playlistListBox.Items[i] as PlayListClass).filepath == filepath)
+                    if ((playlistListBox.Items[i] as Playlist).FilePath == filepath)
                     {
                         found = true;
                         break;
@@ -38,9 +44,9 @@ namespace AudioPlayer
                     if ((File.GetAttributes(filepath) & FileAttributes.Directory) == FileAttributes.Directory)
                     {
                         //Add to the playlist listbox
-                        playlistListBox.Items.Add(new PlayListClass(filepath));
+                        playlistListBox.Items.Add(new Playlist(filepath));
 
-                        //Add filepath to the xml database
+                        //Add the folder path to the xml database
                         System.Xml.XmlNode filePathNode = mainConfigXml.CreateNode(System.Xml.XmlNodeType.Element, "FilePath", null);
                         filePathNode.InnerText = filepath;
 
@@ -54,7 +60,7 @@ namespace AudioPlayer
                         }
 
                         //Rearrange by alphabetical order                        
-                        playlistListBox.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("filepath", System.ComponentModel.ListSortDirection.Ascending));
+                        playlistListBox.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("FilePath", System.ComponentModel.ListSortDirection.Ascending));
                     }
                 }
             }
@@ -72,7 +78,7 @@ namespace AudioPlayer
             songlistListBox.Items.Clear();
             filterTB.Text = "";
 
-            GetAllFiles(new DirectoryInfo((playlistListBox.SelectedItem as PlayListClass).filepath));
+            GetAllFiles(new DirectoryInfo((playlistListBox.SelectedItem as Playlist).FilePath));
             List<FileInfo> sortedFiles = tempListOfFiles.OrderBy(f => f.Name).ToList();
 
             if (sortedFiles.Count == 0)
@@ -81,14 +87,14 @@ namespace AudioPlayer
             }
 
             //Put the files into the listbox. Check if it's the same playlist, if it is then update the existing list back
-            if (nowPlayingList.Count == 0 || sortedFiles[0].DirectoryName != System.IO.Path.GetDirectoryName(nowPlayingList.ElementAt(0).Key))
+            if (NowPlayingList.Count == 0 || sortedFiles[0].DirectoryName != System.IO.Path.GetDirectoryName(NowPlayingList.ElementAt(0).Key))
             {
                 //Quite clear, it's a new directory/playlist. Just add normally.
                 for (int i = 0; i < sortedFiles.Count(); i++)
                 {
                     if (IsAudioFile(sortedFiles[i].Name) == true)
                     {
-                        songlistListBox.Items.Add(new SongClass(sortedFiles[i].FullName));
+                        songlistListBox.Items.Add(new Song(sortedFiles[i].FullName));
                     }
                 }
             }
@@ -98,25 +104,23 @@ namespace AudioPlayer
                 {
                     if (IsAudioFile(sortedFiles[i].Name) == true)
                     {
-                        if (nowPlayingList.ContainsKey(sortedFiles[i].FullName) == true)
+                        if (NowPlayingList.ContainsKey(sortedFiles[i].FullName) == true)
                         {
-                            songlistListBox.Items.Add(nowPlayingList[sortedFiles[i].FullName]);
+                            songlistListBox.Items.Add(NowPlayingList[sortedFiles[i].FullName]);
                         }
                         else
                         {
-                            songlistListBox.Items.Add(new SongClass(sortedFiles[i].FullName));
+                            songlistListBox.Items.Add(new Song(sortedFiles[i].FullName));
                         }
                     }
                 }
 
-                nowPlayingList.Clear();
-                foreach (SongClass songObj in songlistListBox.Items)
+                NowPlayingList.Clear();
+                foreach (Song songObj in songlistListBox.Items)
                 {
-                    nowPlayingList.Add(songObj.filepath, songObj);
+                    NowPlayingList.Add(songObj.FilePath, songObj);
                 }
             }
-
-            Console.WriteLine("selection change ended");
         }
 
         private void refreshPlayListListBox()
@@ -130,12 +134,12 @@ namespace AudioPlayer
                 if (Directory.Exists(playlist[i].InnerText) == true)
                 {
                     //Add to the playlist listbox
-                    playlistListBox.Items.Add(new PlayListClass(playlist[i].InnerText));
+                    playlistListBox.Items.Add(new Playlist(playlist[i].InnerText));
                 }
             }
 
             //Rearrange by alphabetical order                        
-            playlistListBox.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("filepath", System.ComponentModel.ListSortDirection.Ascending));
+            playlistListBox.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("FilePath", System.ComponentModel.ListSortDirection.Ascending));
 
             //Select the playlist if it's the only entry on the list
             if (playlistListBox.Items.Count > 0)
@@ -144,13 +148,49 @@ namespace AudioPlayer
             }
         }
 
-        private void GetAllFiles(DirectoryInfo dir)
+        //Walks dir and every subfolder, collecting files into tempListOfFiles.
+        //Runs synchronously on the UI thread, so it must never throw: a single unreadable
+        //subfolder, a dead junction or an over-long path would otherwise take the app down.
+        private void GetAllFiles(DirectoryInfo dir, int depth = 0)
         {
-            foreach (FileInfo fi in dir.GetFiles())
+            if (depth > maxFolderScanDepth)
+            {
+                return;
+            }
+
+            FileInfo[] files;
+            DirectoryInfo[] subDirectories;
+
+            try
+            {
+                files = dir.GetFiles();
+                subDirectories = dir.GetDirectories();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                //Permission denied on this folder - skip it and carry on with the rest.
+                return;
+            }
+            catch (IOException)
+            {
+                //Covers DirectoryNotFoundException and PathTooLongException among others.
+                return;
+            }
+
+            foreach (FileInfo fi in files)
                 tempListOfFiles.Add(fi);
 
-            foreach (DirectoryInfo di in dir.GetDirectories())
-                GetAllFiles(di);
+            foreach (DirectoryInfo di in subDirectories)
+            {
+                //A directory symlink or junction can point back up its own tree; following one
+                //would recurse until the stack runs out.
+                if ((di.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+                {
+                    continue;
+                }
+
+                GetAllFiles(di, depth + 1);
+            }
         }
 
         private bool IsAudioFile(string path)
@@ -160,28 +200,37 @@ namespace AudioPlayer
 /************************************************************************************************/
         private void playlistListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            //Called with null arguments from nextGrid_Click and playGrid_Click, where there is
+            //no guarantee a playlist is selected - after deleting the last one, for instance.
+            Playlist selectedPlayListObj = playlistListBox.SelectedItem as Playlist;
+
+            if (selectedPlayListObj == null)
+            {
+                return;
+            }
+
             GlobalVariables.NowPlayingSingle = "";
 
             //Change song list to green
-            foreach (SongClass songObj in songlistListBox.Items)
+            foreach (Song songObj in songlistListBox.Items)
             {
-                songObj.isPlaying = false;
+                songObj.IsPlaying = false;
             }
 
             //Change to green color
-            foreach (PlayListClass playListObj in playlistListBox.Items)
+            foreach (Playlist playListObj in playlistListBox.Items)
             {
-                playListObj.isPlaying = false;
+                playListObj.IsPlaying = false;
             }
-            (playlistListBox.SelectedItem as PlayListClass).isPlaying = true;
+            selectedPlayListObj.IsPlaying = true;
 
             //Play a song
             if (songlistListBox.Items.Count > 0)
             {
-                if (shuffleState == STATE.ON)
+                if (ShuffleState == ShuffleState.On)
                 {
-                    //If shuffle, random a song
-                    songlistListBox.SelectedIndex = new Random().Next(0, songlistListBox.Items.Count - 1);
+                    //If shuffle, random a song. Next(count) is exclusive on the upper bound.
+                    songlistListBox.SelectedIndex = shuffleRandom.Next(songlistListBox.Items.Count);
                 }
                 else
                 {
@@ -189,49 +238,57 @@ namespace AudioPlayer
                     songlistListBox.SelectedIndex = 0;
                 }
 
-                playSong(songlistListBox.Items[songlistListBox.SelectedIndex] as SongClass);
+                PlaySong(songlistListBox.Items[songlistListBox.SelectedIndex] as Song);
 
-                //Scroll into view on the listbox
-                new System.Threading.Thread(() =>
-                {
-                    System.Threading.Thread.Sleep(200);
-                    Application.Current.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>
-                    {
-                        scrollNowPlayingSongIntoView();
-                    }));
-                }).Start();
+                //Scroll into view on the listbox, once the list has had a chance to lay out
+                //the containers for the items that were just added.
+                invokeAfter(TimeSpan.FromMilliseconds(200), DispatcherPriority.Background, scrollNowPlayingSongIntoView);
             }
 
             //Load the existing list into a backend database
-            nowPlayingList.Clear();
-            foreach (SongClass songObj in songlistListBox.Items)
+            NowPlayingList.Clear();
+            foreach (Song songObj in songlistListBox.Items)
             {
-                nowPlayingList.Add(songObj.filepath, songObj);
+                NowPlayingList.Add(songObj.FilePath, songObj);
             }
         }
 
         private void songlistListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            //Called with null arguments from PlaySong(string), so neither selection is certain.
+            Song selectedSongObj = songlistListBox.SelectedItem as Song;
+
+            if (selectedSongObj == null)
+            {
+                return;
+            }
+
             GlobalVariables.NowPlayingSingle = "";
 
-            //Assign the playlist isPlaying to true
-            foreach (PlayListClass playListObj in playlistListBox.Items)
+            //Assign the playlist IsPlaying to true
+            foreach (Playlist playListObj in playlistListBox.Items)
             {
-                playListObj.isPlaying = false;
+                playListObj.IsPlaying = false;
             }
-            (playlistListBox.SelectedItem as PlayListClass).isPlaying = true;
+
+            Playlist selectedPlayListObj = playlistListBox.SelectedItem as Playlist;
+
+            if (selectedPlayListObj != null)
+            {
+                selectedPlayListObj.IsPlaying = true;
+            }
 
             //Create the backend database from zero (because the database might be from a different playlist)
-            nowPlayingList.Clear();
+            NowPlayingList.Clear();
 
-            foreach (SongClass songObj in songlistListBox.Items)
+            foreach (Song songObj in songlistListBox.Items)
             {
-                songObj.isPlaying = false;
-                nowPlayingList.Add(songObj.filepath, songObj);
+                songObj.IsPlaying = false;
+                NowPlayingList.Add(songObj.FilePath, songObj);
             }
 
-            //Play the song 
-            playSong(songlistListBox.SelectedItem as SongClass);
+            //Play the song
+            PlaySong(selectedSongObj);
         }
 /************************************************************************************************/
     }

@@ -1,20 +1,17 @@
-﻿using System.Windows;
-
 namespace AudioPlayer
 {
-    public partial class MainWindow : Window
+    //Member names are surfaced to the UI: StringContainsStringToVisibilityConverter matches
+    //ToString() against "on"/"off"/"playlist"/"single" to pick the button image.
+    public enum ShuffleState
     {
-        public enum STATE
-        {
-            ON,
-            OFF
-        }
+        On,
+        Off
+    }
 
-        public enum REPEAT_MODE
-        {
-            OFF,
-            PLAYLIST,
-            SINGLE
-        }
+    public enum RepeatMode
+    {
+        Off,
+        Playlist,
+        Single
     }
 }

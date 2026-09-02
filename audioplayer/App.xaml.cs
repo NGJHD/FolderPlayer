@@ -26,14 +26,13 @@ namespace AudioPlayer
         [STAThread]
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            //MainWindow window = new MainWindow();
-            GlobalVariables.mainWindow = new MainWindow();
-            GlobalVariables.mainWindow.Show();
+            GlobalVariables.MainWindow = new MainWindow();
+            GlobalVariables.MainWindow.Show();
 
             if (e.Args.Length > 0)
             {
                 GlobalVariables.NowPlayingSingle = e.Args[0];
-                GlobalVariables.mainWindow.playSong(new SongClass(e.Args[0]));
+                GlobalVariables.MainWindow.PlaySong(new Song(e.Args[0]));
             }
         }        
 
@@ -41,30 +40,30 @@ namespace AudioPlayer
         {
             if (args.Count == 1)
             {
-                GlobalVariables.mainWindow.ShowInTaskbar = true;
-                GlobalVariables.mainWindow.WindowState = WindowState.Normal;
-                GlobalVariables.mainWindow.Activate();
+                GlobalVariables.MainWindow.ShowInTaskbar = true;
+                GlobalVariables.MainWindow.WindowState = WindowState.Normal;
+                GlobalVariables.MainWindow.Activate();
             }
 
             if (args.Count == 2)
             {
-                foreach (PlayListClass playListObj in GlobalVariables.mainWindow.playlistListBox.Items)
+                foreach (Playlist playListObj in GlobalVariables.MainWindow.playlistListBox.Items)
                 {
-                    playListObj.isPlaying = false;
+                    playListObj.IsPlaying = false;
                 }
 
-                for (int i = 0; i < GlobalVariables.mainWindow.nowPlayingList.Count; i++)
+                for (int i = 0; i < GlobalVariables.MainWindow.NowPlayingList.Count; i++)
                 {
-                    SongClass songObj = GlobalVariables.mainWindow.nowPlayingList.ElementAt(i).Value as SongClass;
+                    Song songObj = GlobalVariables.MainWindow.NowPlayingList.ElementAt(i).Value as Song;
 
-                    if (songObj.isPlaying == true)
+                    if (songObj.IsPlaying == true)
                     {
-                        songObj.isPlaying = false;
+                        songObj.IsPlaying = false;
                     }
                 }
 
                 GlobalVariables.NowPlayingSingle = args[1];
-                GlobalVariables.mainWindow.playSong(new SongClass(args[1]));
+                GlobalVariables.MainWindow.PlaySong(new Song(args[1]));
             }
 
             return true;

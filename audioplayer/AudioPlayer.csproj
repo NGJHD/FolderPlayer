@@ -83,20 +83,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="MainWindow\Title Bar.cs" />
-    <Compile Include="MainWindow\Windows State.cs" />
+    <Compile Include="MainWindow\TitleBar.cs" />
+    <Compile Include="MainWindow\WindowState.cs" />
     <Compile Include="Converters\BoolToForegroundConverter.cs" />
     <Compile Include="Converters\ForegroundToOpacityConverter.cs" />
     <Compile Include="Converters\StringContainsStringToVisibilityConverter.cs" />
     <Compile Include="Converters\ZeroToVisibilityConverter.cs" />
     <Compile Include="MainWindow\ListBoxes.cs" />
-    <Compile Include="MainWindow\Media and Seek Bar.cs" />
-    <Compile Include="MainWindow\Delete PlayList.cs" />
+    <Compile Include="MainWindow\MediaAndSeekBar.cs" />
+    <Compile Include="MainWindow\DeletePlaylist.cs" />
     <Compile Include="Global\Bindings.cs" />
     <Compile Include="Global\Enum.cs" />
     <Compile Include="Global\Hook.cs" />
     <Compile Include="Converters\SLBIVisibilityConverter.cs" />
-    <Compile Include="Base Classes\SongClass.cs" />
+    <Compile Include="BaseClasses\Song.cs" />
     <Compile Include="Global\DefinitionClasses.cs" />
     <Compile Include="Converters\FilePathToFileNameConverter.cs" />
     <Compile Include="SingleInstance.cs" />
@@ -119,7 +119,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base Classes\PlayListClass.cs" />
+    <Compile Include="BaseClasses\Playlist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -211,6 +211,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Player.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Shipped alongside the exe: the association script resolves AudioPlayer.exe via $PSScriptRoot. -->
+    <Content Include="Scripts\Register-FileAssociations.bat">
+      <Link>Register-FileAssociations.bat</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scripts\Register-FileAssociations.ps1">
+      <Link>Register-FileAssociations.ps1</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

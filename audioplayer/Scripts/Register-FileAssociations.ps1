@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Registers FolderPlayer (AudioPlayer.exe) as a handler for audio file types.
 
@@ -40,9 +40,9 @@ $ProgId   = 'FolderPlayer.AudioFile'
 $AppName  = 'FolderPlayer'
 $AppKey   = 'AudioPlayer.exe'          # name used under Software\Classes\Applications
 
-# Formats WPF MediaElement (Windows Media Foundation) can play.
-# The folder browser itself only lists .mp3/.wma/.m4a/.aac, but any of these
-# will play when opened directly from Explorer.
+# Formats WPF MediaElement (Windows Media Foundation) can decode.
+# Keep this list in step with audioExtensions in MainWindow\ListBoxes.cs - a type
+# registered here but missing there launches the app on a file it will never list.
 $Extensions = @('.mp3', '.wma', '.m4a', '.aac', '.wav', '.flac')
 
 $Classes  = 'HKCU:\Software\Classes'

@@ -27,15 +27,12 @@ namespace KeyboardHook
         {
             VK_LBUTTON = 0X01, //Left mouse 
             VK_RBUTTON = 0X02, //Right mouse 
-            //VK_CANCEL       = 0X03, 
             VK_MBUTTON = 0X04,
             VK_BACK = 0X08, //Backspace 
             VK_TAB = 0X09,
-            //VK_CLEAR        = 0X0C, 
             VK_RETURN = 0X0D, //Enter 
             VK_SHIFT = 0X10,
             VK_CONTROL = 0X11, //CTRL 
-            //VK_MENU         = 0X12, 
             VK_PAUSE = 0X13,
             VK_CAPITAL = 0X14, //Caps-Lock 
             VK_ESCAPE = 0X1B,
@@ -48,13 +45,9 @@ namespace KeyboardHook
             VK_UP = 0X26,
             VK_RIGHT = 0X27,
             VK_DOWN = 0X28,
-            //VK_SELECT       = 0X29, 
-            //VK_PRINT        = 0X2A, 
-            //VK_EXECUTE      = 0X2B, 
             VK_SNAPSHOT = 0X2C, //Print Screen 
             VK_INSERT = 0X2D,
             VK_DELETE = 0X2E,
-            //VK_HELP         = 0X2F, 
 
             VK_0 = 0X30,
             VK_1 = 0X31,
@@ -129,10 +122,11 @@ namespace KeyboardHook
             VK_RSHIFT = 0XA1,
             VK_LCONTROL = 0XA2,
             VK_RCONTROL = 0XA3,
-            //VK_LMENU        = 0XA4, 
-            //VK_RMENU        = 0XA5, 
-            //VK_PLAY         = 0XFA, 
-            //VK_ZOOM         = 0XFB  
+
+            VK_MEDIA_NEXT_TRACK = 0XB0,
+            VK_MEDIA_PREV_TRACK = 0XB1,
+            VK_MEDIA_STOP = 0XB2,
+            VK_MEDIA_PLAY_PAUSE = 0XB3
         }
 
         public delegate IntPtr HookDel(int nCode, IntPtr wParam, IntPtr lParam);

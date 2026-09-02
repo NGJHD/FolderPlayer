@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 using System.IO;
 using KeyboardHook;
 using System.Runtime.InteropServices;
@@ -13,12 +14,18 @@ namespace AudioPlayer
 /************************************************************************************************/
         //Now Playing
         private List<FileInfo> tempListOfFiles = new List<FileInfo>();
-        public Dictionary<string, SongClass> nowPlayingList = new Dictionary<string, SongClass>();
+        public Dictionary<string, Song> NowPlayingList = new Dictionary<string, Song>();
         private string nowPlayingSong = "";
-        
+
+        //Shared across every shuffle draw. A new Random() per call is seeded from the system
+        //tick count, so calls close together in time would repeat the same "random" index.
+        private static readonly Random shuffleRandom = new Random();
+
+        //NotifyIcon.Text is limited to 63 characters plus the terminating null.
+        private const int trayIconTextMaxLength = 63;
 
         //History Related
-        private List<Tuple<bool, string>> songHistoryList = new List<Tuple<bool, string>>(); //First bool is visibility, second string is filepath
+        private List<Tuple<bool, string>> songHistoryList = new List<Tuple<bool, string>>(); //First bool is visibility, second string is the file path
         private bool doNotAddNext = false;
 
         //Config
@@ -53,18 +60,9 @@ namespace AudioPlayer
             //Close the player
             mediaPlayer.Close();
 
-            mainConfigXml.SelectSingleNode("Main/Volume").InnerText = volumeUserControl.GetLevel().ToString();// volumeBar.Value.ToString();
-            mainConfigXml.SelectSingleNode("Main/Shuffle").InnerText = (shuffleState == STATE.ON ? "1" : "0");
-            mainConfigXml.SelectSingleNode("Main/RepeatMode").InnerText = (repeatMode == REPEAT_MODE.OFF ? "0" : (repeatMode == REPEAT_MODE.PLAYLIST ? "1" : "2"));
-
-            /*if (playlistListBox.SelectedIndex != -1)
-            {
-                mainConfigXml.SelectSingleNode("Main/LastKnown/PlaylistFilePath").InnerText = (playlistListBox.SelectedItem as PlayListClass).filepath;
-            }
-            else
-            {
-                mainConfigXml.SelectSingleNode("Main/LastKnown/PlaylistFilePath").InnerText = "";
-            }*/
+            mainConfigXml.SelectSingleNode("Main/Volume").InnerText = volumeUserControl.GetLevel().ToString();
+            mainConfigXml.SelectSingleNode("Main/Shuffle").InnerText = (ShuffleState == ShuffleState.On ? "1" : "0");
+            mainConfigXml.SelectSingleNode("Main/RepeatMode").InnerText = (RepeatMode == RepeatMode.Off ? "0" : (RepeatMode == RepeatMode.Playlist ? "1" : "2"));
 
             if (nowPlayingSong != "")
             {
@@ -84,24 +82,35 @@ namespace AudioPlayer
             mainConfigXml.Save(mainConfigXmlFileName);
         }
 
+        //Called from inside the low-level keyboard hook, which runs for every keystroke on the
+        //machine. Windows silently unhooks a callback that takes longer than LowLevelHooksTimeout
+        //(~300 ms), so nothing here may touch the player directly - the work is queued onto the
+        //dispatcher and the hook returns immediately.
         public void KeyHandler(IntPtr wParam, IntPtr lParam)
         {
-            int key = Marshal.ReadInt32(lParam);
+            Hook.VK key = (Hook.VK)Marshal.ReadInt32(lParam);
 
-            Hook.VK vk = (Hook.VK)key;
+            Action mediaAction;
 
-            if (key == 179)// Hook.VK.VK_F9)
+            switch (key)
             {
-                playGrid_Click(null, null);
+                case Hook.VK.VK_MEDIA_PLAY_PAUSE:
+                    mediaAction = () => playGrid_Click(null, null);
+                    break;
+
+                case Hook.VK.VK_MEDIA_NEXT_TRACK:
+                    mediaAction = () => nextGrid_Click(null, null);
+                    break;
+
+                case Hook.VK.VK_MEDIA_PREV_TRACK:
+                    mediaAction = () => previousGrid_Click(null, null);
+                    break;
+
+                default:
+                    return;
             }
-            else if (key == 176)
-            {
-                nextGrid_Click(null, null);
-            }
-            else if (key == 177)
-            {
-                previousGrid_Click(null, null);
-            }
+
+            Dispatcher.BeginInvoke(DispatcherPriority.Input, mediaAction);
         }
 
         private void mainWindow_ContentRendered(object sender, EventArgs e)
@@ -118,19 +127,13 @@ namespace AudioPlayer
                 refreshPlayListListBox();
             }
 
-            //volumeBar.Value = Convert.ToDouble(mainConfigXml.SelectSingleNode("Main/Volume").InnerText);
             volumeUserControl.SetLevel(Convert.ToInt32(mainConfigXml.SelectSingleNode("Main/Volume").InnerText));
-            shuffleState = (Convert.ToInt32(mainConfigXml.SelectSingleNode("Main/Shuffle").InnerText) == 1 ? STATE.ON : STATE.OFF);
+            ShuffleState = (Convert.ToInt32(mainConfigXml.SelectSingleNode("Main/Shuffle").InnerText) == 1 ? ShuffleState.On : ShuffleState.Off);
             int tempRepeat = Convert.ToInt32(mainConfigXml.SelectSingleNode("Main/RepeatMode").InnerText);
-            repeatMode = (tempRepeat == 0 ? REPEAT_MODE.OFF : (tempRepeat == 1 ? REPEAT_MODE.PLAYLIST : REPEAT_MODE.SINGLE));
+            RepeatMode = (tempRepeat == 0 ? RepeatMode.Off : (tempRepeat == 1 ? RepeatMode.Playlist : RepeatMode.Single));
 
             //Hook the Keyboard
             Hook.CreateHook(KeyHandler);
-
-            //Start listening to other instances of this wrapper
-            /*System.Threading.Thread listenerThread = new System.Threading.Thread(udpListener);
-            listenerThread.IsBackground = true;
-            listenerThread.Start();*/
 
             string playSongFilePath = mainConfigXml.SelectSingleNode("Main/LastKnown/SongFilePath").InnerText;
 
@@ -139,7 +142,7 @@ namespace AudioPlayer
                 if (playSongFilePath != "")
                 {
                     //Play the song
-                    bool foundSongInPlaylist = playSong(playSongFilePath, true);
+                    bool foundSongInPlaylist = PlaySong(playSongFilePath, true);
 
                     if (foundSongInPlaylist == false)
                     {
@@ -149,7 +152,7 @@ namespace AudioPlayer
                         }
 
                         GlobalVariables.NowPlayingSingle = playSongFilePath;
-                        playSong(new SongClass(playSongFilePath));                        
+                        PlaySong(new Song(playSongFilePath));                        
                     }
                     
                     justStarted_SeekBar = true;
@@ -173,7 +176,6 @@ namespace AudioPlayer
                     writer.WriteElementString("Shuffle", "0");
                     writer.WriteElementString("RepeatMode", "1");
                 writer.WriteStartElement("LastKnown");
-                        //writer.WriteElementString("PlaylistFilePath", "");
                         writer.WriteElementString("SongFilePath", "");
                         writer.WriteElementString("ElapsedTime", "");
                     writer.WriteEndElement();
@@ -188,29 +190,29 @@ namespace AudioPlayer
 /************************************************************************************************/
         private void shuffleGrid_Click(object sender, EventArgs e)
         {
-            if (shuffleState == STATE.ON)
+            if (ShuffleState == ShuffleState.On)
             {
-                shuffleState = STATE.OFF;
+                ShuffleState = ShuffleState.Off;
             }
             else
             {
-                shuffleState = STATE.ON;
+                ShuffleState = ShuffleState.On;
             }
         }
 
         private void repeatGrid_Click(object sender, EventArgs e)
         {
-            if (repeatMode == REPEAT_MODE.OFF)
+            if (RepeatMode == RepeatMode.Off)
             {
-                repeatMode = REPEAT_MODE.PLAYLIST;
+                RepeatMode = RepeatMode.Playlist;
             }
-            else if (repeatMode == REPEAT_MODE.PLAYLIST)
+            else if (RepeatMode == RepeatMode.Playlist)
             {
-                repeatMode = REPEAT_MODE.SINGLE;
+                RepeatMode = RepeatMode.Single;
             }
             else
             {
-                repeatMode = REPEAT_MODE.OFF;
+                RepeatMode = RepeatMode.Off;
             }
         }
 
@@ -221,21 +223,21 @@ namespace AudioPlayer
                 return;
             }
 
-            if (repeatMode == REPEAT_MODE.SINGLE)
+            if (RepeatMode == RepeatMode.Single)
             {
                 if (GlobalVariables.NowPlayingSingle == "")
                 {
-                    playSong(nowPlayingSong);
+                    PlaySong(nowPlayingSong);
                 }
                 else
                 {
-                    playSong(new SongClass(GlobalVariables.NowPlayingSingle));
+                    PlaySong(new Song(GlobalVariables.NowPlayingSingle));
                 }
 
                 return;
             }
 
-            if (nowPlayingList.Count == 0 && playlistListBox.Items.Count > 0)
+            if (NowPlayingList.Count == 0 && playlistListBox.Items.Count > 0)
             {
                 playlistListBox_MouseDoubleClick(null, null);
                 return;
@@ -252,34 +254,35 @@ namespace AudioPlayer
                     {
                         doNotAddNext = true;
                         songHistoryList[i] = new Tuple<bool, string>(true, songHistoryList.ElementAt(i).Item2);
-                        playSong(songHistoryList[i].Item2);
+                        PlaySong(songHistoryList[i].Item2);
                         return;
                     }
                 }
             }
 
-            if (shuffleState == STATE.ON)
+            if (ShuffleState == ShuffleState.On)
             {
-                for (int i = 0; i < nowPlayingList.Count; i++)
+                for (int i = 0; i < NowPlayingList.Count; i++)
                 {
-                    (nowPlayingList.ElementAt(i).Value as SongClass).isPlaying = false;
+                    (NowPlayingList.ElementAt(i).Value as Song).IsPlaying = false;
                 }
 
-                nextSongIndex = new Random().Next(0, nowPlayingList.Count - 1);
+                //Next(count) is exclusive on the upper bound, so this covers every index.
+                nextSongIndex = shuffleRandom.Next(NowPlayingList.Count);
             }
             else
             {
-                for (int i = 0; i < nowPlayingList.Count; i++)
+                for (int i = 0; i < NowPlayingList.Count; i++)
                 {
-                    SongClass songObj = nowPlayingList.ElementAt(i).Value as SongClass;
+                    Song songObj = NowPlayingList.ElementAt(i).Value as Song;
 
-                    if (songObj.isPlaying == true)
+                    if (songObj.IsPlaying == true)
                     {
-                        songObj.isPlaying = false;
+                        songObj.IsPlaying = false;
 
-                        if (i == nowPlayingList.Count - 1)
+                        if (i == NowPlayingList.Count - 1)
                         {
-                            if (repeatMode == REPEAT_MODE.OFF)
+                            if (RepeatMode == RepeatMode.Off)
                             {
                                 defaultState();
                                 return;
@@ -299,7 +302,7 @@ namespace AudioPlayer
                 }
             }
 
-            playSong(nowPlayingList.ElementAt(nextSongIndex).Value);
+            PlaySong(NowPlayingList.ElementAt(nextSongIndex).Value);
 
             //Scroll into view on the listbox
             scrollNowPlayingSongIntoView();
@@ -333,7 +336,7 @@ namespace AudioPlayer
                     }
 
                     //Play the song before the one that's currently playing
-                    playSong(songHistoryList[Math.Max(i - 1, 0)].Item2);
+                    PlaySong(songHistoryList[Math.Max(i - 1, 0)].Item2);
                     break;
                 }
             }
@@ -352,7 +355,7 @@ namespace AudioPlayer
             //Reset parameters
             nowPlayingSong = "";
             trayIcon.Text = "Folder Player";
-            GlobalVariables.mainWindow.Title = "Folder Player";
+            GlobalVariables.MainWindow.Title = "Folder Player";
         }
         
         private void playGrid_Click(object sender, EventArgs e)
@@ -364,14 +367,14 @@ namespace AudioPlayer
                 {
                     if (seekBar.Value == 0)
                     {
-                        playSong(new SongClass(GlobalVariables.NowPlayingSingle));                        
+                        PlaySong(new Song(GlobalVariables.NowPlayingSingle));                        
                     }
                     else
                     {
                         mediaPlayer.Play();
                     }
                 }
-                else if ((nowPlayingList.Count == 0 || nowPlayingSong == "") && playlistListBox.Items.Count > 0)
+                else if ((NowPlayingList.Count == 0 || nowPlayingSong == "") && playlistListBox.Items.Count > 0)
                 {
                     playlistListBox_MouseDoubleClick(null, null);
                 }
@@ -391,13 +394,30 @@ namespace AudioPlayer
             }
         }
 
+        //One-shot delayed callback on the UI thread. Replaces the pattern of spinning up a
+        //throwaway OS thread purely to Thread.Sleep before dispatching back.
+        private static void invokeAfter(TimeSpan delay, DispatcherPriority priority, Action action)
+        {
+            DispatcherTimer timer = new DispatcherTimer(priority);
+            timer.Interval = delay;
+            timer.Tick += (sender, e) =>
+            {
+                timer.Stop();
+                action();
+            };
+
+            timer.Start();
+        }
+
         private void scrollNowPlayingSongIntoView()
         {
-            for (int i = 0; i < nowPlayingList.Count(); i++)
+            for (int i = 0; i < NowPlayingList.Count(); i++)
             {
-                if (nowPlayingList.ElementAt(i).Value.filepath == nowPlayingSong)
+                if (NowPlayingList.ElementAt(i).Value.FilePath == nowPlayingSong)
                 {
-                    if (songlistListBox.Items.Count < i)
+                    //NowPlayingList can hold more entries than the visible list, e.g. right
+                    //after switching playlists, so i is not necessarily a valid item index.
+                    if (i >= songlistListBox.Items.Count)
                     {
                         return;
                     }
@@ -408,7 +428,7 @@ namespace AudioPlayer
             }
         }
 /************************************************************************************************/
-        private bool playSong(string songFilePath, bool scrollIntoView=false)
+        private bool PlaySong(string songFilePath, bool scrollIntoView=false)
         {
             string playlistFilePath = System.IO.Path.GetDirectoryName(songFilePath);
             bool foundPlaylist = false;
@@ -416,7 +436,7 @@ namespace AudioPlayer
             //Find the playlist
             for (int i = 0; i < playlistListBox.Items.Count; i++)
             {
-                if ((playlistListBox.Items[i] as PlayListClass).filepath == playlistFilePath)
+                if ((playlistListBox.Items[i] as Playlist).FilePath == playlistFilePath)
                 {
                     playlistListBox.SelectedIndex = i;
                     foundPlaylist = true;
@@ -432,9 +452,9 @@ namespace AudioPlayer
             //Find the song            
             for (int i = 0; i < songlistListBox.Items.Count; i++)
             {
-                SongClass songObj = songlistListBox.Items[i] as SongClass;
+                Song songObj = songlistListBox.Items[i] as Song;
 
-                if (songObj.filepath == songFilePath)
+                if (songObj.FilePath == songFilePath)
                 {
                     songlistListBox.SelectedIndex = i;
                     songlistListBox_MouseDoubleClick(null, null);
@@ -451,15 +471,15 @@ namespace AudioPlayer
             return false;
         }
 
-        public void playSong(SongClass songObj)
+        public void PlaySong(Song songObj)
         {
             if (String.IsNullOrWhiteSpace(nowPlayingSong) == true)
             {
-                songHistoryList.Add(new Tuple<bool, string>(true, songObj.filepath));
+                songHistoryList.Add(new Tuple<bool, string>(true, songObj.FilePath));
             }
             else
             {
-                if (nowPlayingSong != songObj.filepath && doNotAddNext == false)
+                if (nowPlayingSong != songObj.FilePath && doNotAddNext == false)
                 {
                     for (int i = songHistoryList.Count - 1; i >= 0; i--)
                     {
@@ -469,7 +489,7 @@ namespace AudioPlayer
                         }
                         else
                         {
-                            songHistoryList.Add(new Tuple<bool, string>(true, songObj.filepath));
+                            songHistoryList.Add(new Tuple<bool, string>(true, songObj.FilePath));
                             break;
                         }
                     }
@@ -477,18 +497,16 @@ namespace AudioPlayer
             }
 
             doNotAddNext = false;
-            nowPlayingSong = songObj.filepath;
-            try
-            {
-                trayIcon.Text = "Now Playing: " + System.IO.Path.GetFileName(nowPlayingSong);
-            }
-            catch (Exception)
-            {
-                trayIcon.Text = ("Now Playing: " + System.IO.Path.GetFileName(nowPlayingSong)).Substring(0, 63);
-            }
-            songObj.isPlaying = true;
+            nowPlayingSong = songObj.FilePath;
 
-            mediaPlayer.Source = new Uri(songObj.filepath, UriKind.Absolute);
+            string trayIconText = "Now Playing: " + System.IO.Path.GetFileName(nowPlayingSong);
+            trayIcon.Text = (trayIconText.Length > trayIconTextMaxLength
+                                ? trayIconText.Substring(0, trayIconTextMaxLength)
+                                : trayIconText);
+
+            songObj.IsPlaying = true;
+
+            mediaPlayer.Source = new Uri(songObj.FilePath, UriKind.Absolute);
             mediaPlayer.Play();
 
             playImage.Visibility = System.Windows.Visibility.Collapsed;
@@ -496,13 +514,13 @@ namespace AudioPlayer
 
             if (GlobalVariables.NowPlayingSingle == "")
             {
-                GlobalVariables.mainWindow.Title = "FOLDER PLAYER - " + System.IO.Path.GetFileNameWithoutExtension(songObj.filepath);
+                GlobalVariables.MainWindow.Title = "FOLDER PLAYER - " + System.IO.Path.GetFileNameWithoutExtension(songObj.FilePath);
                 nowPlayingSingleGrid.Visibility = Visibility.Collapsed;
             }
             else
             {
-                GlobalVariables.mainWindow.Title = "FOLDER PLAYER - SINGLE - " + System.IO.Path.GetFileNameWithoutExtension(songObj.filepath);
-                nowPlayingSingleTextBlock.Text = System.IO.Path.GetFileName(songObj.filepath);
+                GlobalVariables.MainWindow.Title = "FOLDER PLAYER - SINGLE - " + System.IO.Path.GetFileNameWithoutExtension(songObj.FilePath);
+                nowPlayingSingleTextBlock.Text = System.IO.Path.GetFileName(songObj.FilePath);
                 nowPlayingSingleGrid.Visibility = Visibility.Visible;
             }
         }

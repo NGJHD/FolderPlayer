@@ -12,12 +12,12 @@ namespace AudioPlayer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value != null && value.ToString() == ColorDefinitionClass.SelectedColor.ToString()) //Green
+            if (value != null && value.ToString() == ColorDefinitions.SelectedColor.ToString()) //Green
             {
-                return OpacityDefinitionClass.Level1Opacity;
+                return OpacityDefinitions.Level1Opacity;
             }
 
-            return OpacityDefinitionClass.Level3Opacity;
+            return OpacityDefinitions.Level3Opacity;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
