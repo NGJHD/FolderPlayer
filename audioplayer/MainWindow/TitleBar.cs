@@ -12,17 +12,6 @@ namespace AudioPlayer
             ((System.Windows.Interop.HwndSource)PresentationSource.FromVisual(this)).AddHook(HookProc);
         }
 
-        private void OnInfoButtonClick(object sender, RoutedEventArgs e)
-        {
-            //Read the version off the assembly rather than repeating it here, so this box and
-            //AssemblyInfo.cs cannot drift apart.
-            Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-
-            MessageBox.Show("Music Folder Player v" + version.ToString(3) + "\n" +
-                            "Written by: Darren Ng\n" +
-                            "Email: ng.jh.darren@outlook.com\n", "Info");
-        }
-
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
         {
             GlobalVariables.MainWindow.Close();

@@ -66,6 +66,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
+    <!-- Updater: HttpClient, ZipFile and DataContractJsonSerializer respectively. -->
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
@@ -84,6 +89,11 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="MainWindow\TitleBar.cs" />
+    <Compile Include="MainWindow\AboutOverlay.cs" />
+    <Compile Include="Update\AboutInfo.cs" />
+    <Compile Include="Update\GitHubRelease.cs" />
+    <Compile Include="Update\VersionUtil.cs" />
+    <Compile Include="Update\Updater.cs" />
     <Compile Include="MainWindow\WindowState.cs" />
     <Compile Include="Converters\BoolToForegroundConverter.cs" />
     <Compile Include="Converters\ForegroundToOpacityConverter.cs" />

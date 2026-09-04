@@ -454,6 +454,162 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!--  About overlay: primary action (Check for updates / Update)  -->
+        <Style x:Key="AboutButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="16,7,16,7" />
+            <Setter Property="MinWidth" Value="140" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border"
+                                Background="#00688F"
+                                CornerRadius="4"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#0081B2" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#00506E" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#303030" />
+                                <Setter Property="Foreground" Value="#808080" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  About overlay: secondary action (Cancel)  -->
+        <Style x:Key="AboutSecondaryButtonStyle"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource AboutButtonStyle}">
+            <Setter Property="MinWidth" Value="90" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border"
+                                Background="Transparent"
+                                BorderBrush="#616161"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Focusable="False" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#303030" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#212121" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#808080" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="#3A3A3A" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  About overlay: the repository address, which reads and behaves as a link  -->
+        <Style x:Key="AboutLinkButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="#4FC3F7" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <TextBlock x:Name="text"
+                                   Background="Transparent"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   Text="{TemplateBinding Content}"
+                                   TextTrimming="CharacterEllipsis" />
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="text" Property="TextDecorations" Value="Underline" />
+                                <Setter TargetName="text" Property="Foreground" Value="#81D4FA" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  About overlay: the X in the card's top right  -->
+        <Style x:Key="AboutCloseButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="26" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border"
+                                Background="Transparent"
+                                CornerRadius="4"
+                                SnapsToDevicePixels="True">
+                            <Path Data="M 0,0 9,9 M 0,9 9,0"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Stroke="#B0B0B0"
+                                  StrokeThickness="1.4"
+                                  x:Name="glyph" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#303030" />
+                                <Setter TargetName="glyph" Property="Stroke" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  About overlay: download progress  -->
+        <Style x:Key="AboutProgressBarStyle" TargetType="{x:Type ProgressBar}">
+            <Setter Property="Height" Value="4" />
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="Maximum" Value="100" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ProgressBar}">
+                        <Border Background="#303030" CornerRadius="2">
+                            <Grid>
+                                <Rectangle x:Name="PART_Track" />
+                                <Rectangle x:Name="PART_Indicator"
+                                           HorizontalAlignment="Left"
+                                           Fill="#00A0DC"
+                                           RadiusX="2"
+                                           RadiusY="2" />
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <!--  Tells Windows to treat the first 32px as a title bar  -->
@@ -841,6 +997,137 @@
                     </Grid>
                 </Grid>
             </Grid>
+        </Grid>
+
+        <!--  ABOUT  -->
+        <!--
+            Sits over everything, so it is reachable in every state the window can be in -
+            including the empty one, before any playlist exists.
+        -->
+        <Grid x:Name="aboutOverlay"
+              Background="#CC000000"
+              Focusable="True"
+              MouseLeftButtonDown="OnAboutScrimMouseDown"
+              Panel.ZIndex="10"
+              PreviewKeyDown="OnAboutOverlayPreviewKeyDown"
+              Visibility="Collapsed"
+              WindowChrome.IsHitTestVisibleInChrome="True">
+
+            <Border Width="440"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="#F2161616"
+                    BorderBrush="#00688F"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                <Grid Margin="24,18,24,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <!--  Name and close  -->
+                        <RowDefinition Height="Auto" />
+                        <!--  Version  -->
+                        <RowDefinition Height="Auto" />
+                        <!--  Author  -->
+                        <RowDefinition Height="Auto" />
+                        <!--  Repository link  -->
+                        <RowDefinition Height="Auto" />
+                        <!--  Divider  -->
+                        <RowDefinition Height="Auto" />
+                        <!--  Update status  -->
+                        <RowDefinition Height="Auto" />
+                        <!--  Download progress  -->
+                        <RowDefinition Height="Auto" />
+                        <!--  Buttons  -->
+                    </Grid.RowDefinitions>
+
+                    <!--  NAME AND CLOSE  -->
+                    <Grid Grid.Row="0">
+                        <TextBlock HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="White"
+                                   Text="Folder Player" />
+                        <Button HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Click="OnAboutCloseClick"
+                                Style="{StaticResource AboutCloseButtonStyle}"
+                                ToolTip="Close" />
+                    </Grid>
+
+                    <!--  VERSION  -->
+                    <TextBlock x:Name="aboutVersionText"
+                               Grid.Row="1"
+                               Margin="0,2,0,0"
+                               FontSize="13"
+                               Foreground="#B0B0B0" />
+
+                    <!--  AUTHOR  -->
+                    <TextBlock x:Name="aboutAuthorText"
+                               Grid.Row="2"
+                               Margin="0,14,0,0"
+                               FontSize="13"
+                               Foreground="#E0E0E0" />
+
+                    <!--  REPOSITORY  -->
+                    <Button x:Name="aboutRepoLinkButton"
+                            Grid.Row="3"
+                            Margin="0,6,0,0"
+                            Click="OnAboutRepoLinkClick"
+                            Style="{StaticResource AboutLinkButtonStyle}"
+                            ToolTip="Open the repository on github.com" />
+
+                    <!--  DIVIDER  -->
+                    <Rectangle Grid.Row="4"
+                               Height="1"
+                               Margin="0,18,0,0"
+                               Fill="White"
+                               Opacity="{x:Static local:OpacityDefinitions.DividerOpacity}" />
+
+                    <!--  UPDATE STATUS  -->
+                    <TextBlock x:Name="aboutStatusText"
+                               Grid.Row="5"
+                               Margin="0,16,0,0"
+                               FontSize="13"
+                               Foreground="#E0E0E0"
+                               TextWrapping="Wrap" />
+
+                    <!--  DOWNLOAD PROGRESS  -->
+                    <Grid x:Name="aboutProgressPanel"
+                          Grid.Row="6"
+                          Margin="0,12,0,0"
+                          Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ProgressBar x:Name="aboutProgressBar" Style="{StaticResource AboutProgressBarStyle}" />
+                        <!--  Bytes, not just a percentage: it is the only way to tell slow from stuck.  -->
+                        <TextBlock x:Name="aboutProgressText"
+                                   Grid.Row="1"
+                                   Margin="0,6,0,0"
+                                   FontSize="12"
+                                   Foreground="#909090" />
+                    </Grid>
+
+                    <!--  BUTTONS  -->
+                    <StackPanel Grid.Row="7"
+                                Margin="0,20,0,0"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                        <Button x:Name="aboutCancelButton"
+                                Margin="0,0,10,0"
+                                Click="OnAboutCancelDownloadClick"
+                                Content="Cancel"
+                                Style="{StaticResource AboutSecondaryButtonStyle}"
+                                Visibility="Collapsed" />
+                        <Button x:Name="aboutPrimaryButton"
+                                Click="OnAboutPrimaryButtonClick"
+                                Content="Check for updates"
+                                Style="{StaticResource AboutButtonStyle}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </Window>
